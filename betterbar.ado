@@ -1,4 +1,4 @@
-//! version 1.1 08NOV2018  DIME Analytics bdaniels@worldbank.org
+//! version 1.0.0 08NOV2018  DIME Analytics bdaniels@worldbank.org
 
 // Better bar graph program
 
@@ -28,8 +28,6 @@ marksample touse
 	keep if `touse'
 
 // Setup
-
-
 
 	// Clean for weights
 	local anything = subinstr("`anything'","[]","",.)
@@ -213,5 +211,7 @@ marksample touse
 		, xtitle(" ") ytitle(" ") `options' `reverse' legend(order(`theLegend')) ///
 		`axis'lab(`varlabs' , angle(0) nogrid notick)  ylab(,angle(0))
 
-} // end qui
+// end qui
+}
 end
+// Have a lovely day!
