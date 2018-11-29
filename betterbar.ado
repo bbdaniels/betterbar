@@ -178,6 +178,12 @@ marksample touse
 			replace n = subinstr(n,"`var'","",1) if strpos(n,"`var'") == 1
 		}
 
+		// Gaps
+		count
+		forvalues i = 2/`r(N)' {
+			if var[`i'] != var[`=`i'-1'] replace place = place + 3 if _n >= `i'
+		}
+
 		// Set up by-levels
 		foreach level in `bylevels' {
 			foreach var in `anything' {
@@ -186,12 +192,6 @@ marksample touse
 				else if "`r(mean)'" != "" local varlabs `"`varlabs' `r(mean)' "``var''"  "'
 			}
 		}
-
-		// Gaps
-			count
-			forvalues i = 2/`r(N)' {
-				if var[`i'] != var[`=`i'-1'] replace place = place + 3 if _n >= `i'
-			}
 
 // Make the graph
 
