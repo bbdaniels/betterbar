@@ -144,7 +144,8 @@ marksample touse
 			local theLabel : label (`over') `level'
 			count if `over' == `level'
 			if "`n'" != "" local theN " (N=`r(N)')"
-			local theBars `"`theBars' (bar stat_1 place if n == "`level'" , barw(2) fi(100) lw(thin) `la' lc(white) `horizontal' legend(label(`x' "`theLabel'`theN'")) ) "'
+			local theBars `"`theBars' (bar stat_1 place if n == "`level'" , barw(2) fi(100) lw(thin) `la' lc(white) `horizontal' ) "'
+			local theLegend `"`theLegend' `x' "`theLabel'`theN'""'
 		}
 		// Get variable labels
 		foreach var in `anything' {
@@ -166,10 +167,10 @@ marksample touse
 		// Set up bar labels
 		gen lab = strofreal(stat_1,"%9.2f")
 		if "`format'" != "" replace lab = strofreal(stat_1,"`format'")
-		if "`barlab'" != "" & "`ci'" == "ci" & "`vertical'" == "" local blabplot "(scatter place stat_6  , m(none) mlab(lab) mlabpos(3) mlabc(black) legend(label(`x' " ")) )"
-		if "`barlab'" != "" & "`ci'" == ""   & "`vertical'" == "" local blabplot "(scatter place stat_1  , m(none) mlab(lab) mlabpos(3) mlabc(black) legend(label(`x' " ")) )"
-		if "`barlab'" != "" & "`ci'" == "ci" & "`vertical'" != "" local blabplot "(scatter stat_6 place , m(none) mlab(lab) mlabpos(3) mlabc(black) legend(label(`x' " ")) )"
-		if "`barlab'" != "" & "`ci'" == ""   & "`vertical'" != "" local blabplot "(scatter stat_1 place , m(none) mlab(lab) mlabpos(3) mlabc(black) legend(label(`x' " ")) )"
+		if "`barlab'" != "" & "`ci'" == "ci" & "`vertical'" == "" local blabplot "(scatter place stat_6  , m(none) mlab(lab) mlabpos(3) mlabc(black) )"
+		if "`barlab'" != "" & "`ci'" == ""   & "`vertical'" == "" local blabplot "(scatter place stat_1  , m(none) mlab(lab) mlabpos(3) mlabc(black) )"
+		if "`barlab'" != "" & "`ci'" == "ci" & "`vertical'" != "" local blabplot "(scatter stat_6 place , m(none) mlab(lab) mlabpos(3) mlabc(black) )"
+		if "`barlab'" != "" & "`ci'" == ""   & "`vertical'" != "" local blabplot "(scatter stat_1 place , m(none) mlab(lab) mlabpos(3) mlabc(black) )"
 
 		// Set up variable names
 		gen var = ""
@@ -201,8 +202,8 @@ marksample touse
 		`theBars' 	///
 		`ciplot' 	///
 		`blabplot' 	///
-		(scatter zero zero , m (none) legend(label(`=`x'+1' " "))) ///
-		, xtitle(" ") ytitle(" ") `options' `reverse' ///
+		(scatter zero zero , m (none) ) ///
+		, xtitle(" ") ytitle(" ") `options' `reverse' legend(order(`theLegend')) ///
 		`axis'lab(`varlabs' , angle(0) nogrid notick)  ylab(,angle(0))
 
 } // end qui
