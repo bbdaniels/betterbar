@@ -83,7 +83,7 @@ marksample touse
 			if `r(N)' == 0 replace `var' = 0 if `by' == `bylevel'
 		}
 		keep if `by' == `bylevel'
-		mean `anything' [`weight'`exp'] , over(`over')
+		mean `anything' [`weight'`exp'] , over(`over' , nolabel)
 
 		mat a = r(table)
 		clear
@@ -144,7 +144,7 @@ marksample touse
 			local theLabel : label (`over') `level'
 			count if `over' == `level'
 			if "`n'" != "" local theN " (N=`r(N)')"
-			local theBars `"`theBars' (bar stat_1 place if n == "`theLabel'" , barw(2) fi(100) lw(thin) `la' lc(white) `horizontal' legend(label(`x' "`theLabel'`theN'")) ) "'
+			local theBars `"`theBars' (bar stat_1 place if n == "`level'" , barw(2) fi(100) lw(thin) `la' lc(white) `horizontal' legend(label(`x' "`theLabel'`theN'")) ) "'
 		}
 		// Get variable labels
 		foreach var in `anything' {
