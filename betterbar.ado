@@ -113,7 +113,14 @@ marksample touse
 		gen `temp' = stat_ if type == 0
 		bys n: egen order = min(`temp')
 		drop `temp'
-		sort `by' n order type
+
+		gen so = 0
+		local n = -1
+		foreach item in `anything' {
+			replace so = `n' if strpos(n,"`item'") == 1
+			local --n
+		}
+		sort `by' so n order type
 		keep if type == 1 | type == 5 | type == 6
 		drop if stat_ == 0 | stat_ == .
 		gen place = _n - mod(_n,3)
