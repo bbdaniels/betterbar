@@ -127,7 +127,7 @@ marksample touse
 		count
 		forvalues i = 1/`r(N)' {
 			if `by'[`i'] != `by'[`=`i'-1'] local x = `x'+3
-			replace place = place + `x' in `i'
+			replace place = place + `x' - 1 in `i'
 		}
 
 	// Save statistics dataset
@@ -186,6 +186,12 @@ marksample touse
 				else if "`r(mean)'" != "" local varlabs `"`varlabs' `r(mean)' "``var''"  "'
 			}
 		}
+
+		// Gaps
+			count
+			forvalues i = 2/`r(N)' {
+				if var[`i'] != var[`=`i'-1'] replace place = place + 3 if _n >= `i'
+			}
 
 // Make the graph
 
