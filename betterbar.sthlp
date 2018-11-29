@@ -45,7 +45,7 @@ bbdaniels@gmail.com
 {title:Contributing}
 
 {p}{bf: betterbar} is available on {browse "https://ideas.repec.org/c/boc/bocode/s458560.html":SSC}
-and is open for development on {browse "https://github.com/bbdaniels/betterbar":GitHub}.
+and is open for development on {browse "https://bbdaniels.github.io/betterbar":GitHub}.
 Submit bugs and feature requests {browse "https://github.com/bbdaniels/betterbar/issues":here}.
 If you like {bf betterbar}, be sure to visit my {browse "http://bbdaniels.github.io":homepage}
 and {browse "https://gist.github.com/bbdaniels/a3c9f9416f1d16d6f3c6e8cf371f1d89":Stata boilerplate code}.{p_end}
