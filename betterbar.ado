@@ -189,10 +189,13 @@ marksample touse
 
 // Make the graph
 
+	gen zero = 0
+
 	tw ///
 		`theBars' 	///
 		`ciplot' 	///
 		`blabplot' 	///
+		(scatter zero zero , m (none) legend(label(`=`x'+1' " "))) ///
 		, xtitle(" ") ytitle(" ") `options' `reverse' ///
 		`axis'lab(`varlabs' , angle(0) nogrid notick)  ylab(,angle(0))
 
