@@ -1,4 +1,4 @@
-//! version 1.1 08NOV2018  DIME Analytics bdaniels@worldbank.org
+//! version 1.2.0 31DEC2018  DIME Analytics bdaniels@worldbank.org
 
 // Confidence intervals alternative specification
 
