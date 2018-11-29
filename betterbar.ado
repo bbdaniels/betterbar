@@ -208,8 +208,9 @@ marksample touse
 		`ciplot' 	///
 		`blabplot' 	///
 		(scatter zero zero , m (none) ) ///
-		, xtitle(" ") ytitle(" ") `options' `reverse' legend(order(`theLegend')) ///
-		`axis'lab(`varlabs' , angle(0) nogrid notick)  ylab(,angle(0))
+		, xtitle(" ") ytitle(" ") `reverse' legend(order(`theLegend')) ///
+			`axis'lab(`varlabs' , angle(0) nogrid notick) ylab(,angle(0)) ///
+			`options'
 
 // end qui
 }
