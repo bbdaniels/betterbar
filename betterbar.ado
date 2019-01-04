@@ -1,6 +1,6 @@
-//! version 1.2.0 31DEC2018  DIME Analytics bdaniels@worldbank.org
+//! version 1.3 31DEC2018  DIME Analytics bbdaniels@gmail.com
 
-// Better bar graph program
+// Betterbar - Stata module to produce bar graphs with standard error bars and cross-group comparisons.
 
 cap prog drop betterbar
 prog def betterbar
