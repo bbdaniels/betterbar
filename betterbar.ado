@@ -1,6 +1,6 @@
-//! version 1.1 08NOV2018  DIME Analytics bdaniels@worldbank.org
+//! version 1.3 31DEC2018  DIME Analytics bbdaniels@gmail.com
 
-// Better bar graph program
+// Betterbar - Stata module to produce bar graphs with standard error bars and cross-group comparisons.
 
 cap prog drop betterbar
 prog def betterbar
@@ -28,8 +28,6 @@ marksample touse
 	keep if `touse'
 
 // Setup
-
-
 
 	// Clean for weights
 	local anything = subinstr("`anything'","[]","",.)
@@ -83,7 +81,7 @@ marksample touse
 			if `r(N)' == 0 replace `var' = 0 if `by' == `bylevel'
 		}
 		keep if `by' == `bylevel'
-		mean `anything' [`weight'`exp'] , over(`over')
+		mean `anything' [`weight'`exp'] , over(`over' , nolabel)
 
 		mat a = r(table)
 		clear
@@ -113,7 +111,14 @@ marksample touse
 		gen `temp' = stat_ if type == 0
 		bys n: egen order = min(`temp')
 		drop `temp'
-		sort `by' n order type
+
+		gen so = 0
+		local n = -1
+		foreach item in `anything' {
+			replace so = `n' if strpos(n,"`item'") == 1
+			local --n
+		}
+		sort `by' so n order type
 		keep if type == 1 | type == 5 | type == 6
 		drop if stat_ == 0 | stat_ == .
 		gen place = _n - mod(_n,3)
@@ -127,7 +132,7 @@ marksample touse
 		count
 		forvalues i = 1/`r(N)' {
 			if `by'[`i'] != `by'[`=`i'-1'] local x = `x'+3
-			replace place = place + `x' in `i'
+			replace place = place + `x' - 1 in `i'
 		}
 
 	// Save statistics dataset
@@ -144,7 +149,8 @@ marksample touse
 			local theLabel : label (`over') `level'
 			count if `over' == `level'
 			if "`n'" != "" local theN " (N=`r(N)')"
-			local theBars `"`theBars' (bar stat_1 place if n == "`theLabel'" , barw(2) fi(100) lw(thin) `la' lc(white) `horizontal' legend(label(`x' "`theLabel'`theN'")) ) "'
+			local theBars `"`theBars' (bar stat_1 place if n == "`level'" , barw(2) fi(100) lw(thin) `la' lc(white) `horizontal' ) "'
+			local theLegend `"`theLegend' `x' "`theLabel'`theN'""'
 		}
 		// Get variable labels
 		foreach var in `anything' {
@@ -166,16 +172,22 @@ marksample touse
 		// Set up bar labels
 		gen lab = strofreal(stat_1,"%9.2f")
 		if "`format'" != "" replace lab = strofreal(stat_1,"`format'")
-		if "`barlab'" != "" & "`ci'" == "ci" & "`vertical'" == "" local blabplot "(scatter place stat_6  , m(none) mlab(lab) mlabpos(3) mlabc(black) legend(label(`x' " ")) )"
-		if "`barlab'" != "" & "`ci'" == ""   & "`vertical'" == "" local blabplot "(scatter place stat_1  , m(none) mlab(lab) mlabpos(3) mlabc(black) legend(label(`x' " ")) )"
-		if "`barlab'" != "" & "`ci'" == "ci" & "`vertical'" != "" local blabplot "(scatter stat_6 place , m(none) mlab(lab) mlabpos(3) mlabc(black) legend(label(`x' " ")) )"
-		if "`barlab'" != "" & "`ci'" == ""   & "`vertical'" != "" local blabplot "(scatter stat_1 place , m(none) mlab(lab) mlabpos(3) mlabc(black) legend(label(`x' " ")) )"
+		if "`barlab'" != "" & "`ci'" == "ci" & "`vertical'" == "" local blabplot "(scatter place stat_6  , m(none) mlab(lab) mlabpos(3) mlabc(black) )"
+		if "`barlab'" != "" & "`ci'" == ""   & "`vertical'" == "" local blabplot "(scatter place stat_1  , m(none) mlab(lab) mlabpos(3) mlabc(black) )"
+		if "`barlab'" != "" & "`ci'" == "ci" & "`vertical'" != "" local blabplot "(scatter stat_6 place , m(none) mlab(lab) mlabpos(3) mlabc(black) )"
+		if "`barlab'" != "" & "`ci'" == ""   & "`vertical'" != "" local blabplot "(scatter stat_1 place , m(none) mlab(lab) mlabpos(3) mlabc(black) )"
 
 		// Set up variable names
 		gen var = ""
 		foreach var in `anything' {
 			replace var = "``var''" if strpos(n,"`var'") == 1
 			replace n = subinstr(n,"`var'","",1) if strpos(n,"`var'") == 1
+		}
+
+		// Gaps
+		count
+		forvalues i = 2/`r(N)' {
+			if var[`i'] != var[`=`i'-1'] replace place = place + 3 if _n >= `i'
 		}
 
 		// Set up by-levels
@@ -189,12 +201,18 @@ marksample touse
 
 // Make the graph
 
+	gen zero = 0
+
 	tw ///
 		`theBars' 	///
 		`ciplot' 	///
 		`blabplot' 	///
-		, xtitle(" ") ytitle(" ") `options' `reverse' ///
-		`axis'lab(`varlabs' , angle(0) nogrid notick)  ylab(,angle(0))
+		(scatter zero zero , m (none) ) ///
+		, xtitle(" ") ytitle(" ") `reverse' legend(order(`theLegend')) ///
+			`axis'lab(`varlabs' , angle(0) nogrid notick) ylab(,angle(0)) ///
+			`options'
 
-} // end qui
+// end qui
+}
 end
+// Have a lovely day!
