@@ -119,11 +119,12 @@ marksample touse
 			local --n
 		}
 		sort `by' so n order type
+
 		keep if type == 1 | type == 5 | type == 6
-		drop if stat_ == 0 | stat_ == .
 		gen place = _n - mod(_n,3)
 			replace place = place - 3 if mod(_n,3) == 0
 			drop order
+
 			reshape wide stat_ , i(n `by') j(type)
 			sort place
 
