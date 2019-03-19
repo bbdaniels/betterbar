@@ -119,7 +119,11 @@ marksample touse
 			replace so = `n' if strpos(n,"`item'") == 1
 			local --n
 		}
-		sort `by' so n order `type'
+
+    tempvar overvar
+    gen `overvar' = real(substr(n,-1,.))
+
+		gsort + `by' + so - `overvar' + n + order + `type'
 
 		keep if `type' == 1 | `type' == 5 | `type' == 6
 		gen place = _n - mod(_n,3)
