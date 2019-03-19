@@ -61,7 +61,6 @@ marksample touse
 	// Horizonal-vertical settings
 	if "`vertical'" == "" local horizontal "horizontal"
 	if "`horizontal'" != "" {
-		// local reverse "yscale(reverse)"
 		local axis y
 	}
 	else {
@@ -211,7 +210,7 @@ marksample touse
 		`ciplot' 	///
 		`blabplot' 	///
 		(scatter zero zero , m (none) ) ///
-		, xtitle(" ") ytitle(" ") `reverse' legend(order(`theLegend')) ///
+		, xtitle(" ") ytitle(" ") legend(order(`theLegend')) ///
 			`axis'lab(`varlabs' , angle(0) nogrid notick) ylab(,angle(0)) ///
 			`options'
 
