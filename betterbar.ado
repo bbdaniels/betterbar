@@ -61,7 +61,7 @@ marksample touse
 	// Horizonal-vertical settings
 	if "`vertical'" == "" local horizontal "horizontal"
 	if "`horizontal'" != "" {
-		local reverse "yscale(reverse)"
+		// local reverse "yscale(reverse)"
 		local axis y
 	}
 	else {
@@ -76,6 +76,7 @@ marksample touse
 	foreach bylevel in `bylevels' {
 		// Mean respecting over-groups
 		use `allData' , clear
+    unab anything : `anything'
 		foreach var of varlist `anything' {
 			count if `by' == `bylevel' & `var' < .
 			if `r(N)' == 0 replace `var' = 0 if `by' == `bylevel'
