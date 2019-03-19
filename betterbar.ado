@@ -76,7 +76,7 @@ marksample touse
 	foreach bylevel in `bylevels' {
 		// Mean respecting over-groups
 		use `allData' , clear
-		foreach var in `anything' {
+		foreach var of varlist `anything' {
 			count if `by' == `bylevel' & `var' < .
 			if `r(N)' == 0 replace `var' = 0 if `by' == `bylevel'
 		}
@@ -103,12 +103,13 @@ marksample touse
 // Set up graphing points
 
 	// Find means and bounds
-		gen type = mod(_n,9)
-		reshape long stat_ , i(`by' type) j(n) string
+    tempvar type
+		gen `type' = mod(_n,9)
+		reshape long stat_ , i(`by' `type') j(n) string
 
 	// Sort order
 		tempvar temp
-		gen `temp' = stat_ if type == 0
+		gen `temp' = stat_ if `type' == 0
 		bys n: egen order = min(`temp')
 		drop `temp'
 
@@ -118,14 +119,14 @@ marksample touse
 			replace so = `n' if strpos(n,"`item'") == 1
 			local --n
 		}
-		sort `by' so n order type
+		sort `by' so n order `type'
 
-		keep if type == 1 | type == 5 | type == 6
+		keep if `type' == 1 | `type' == 5 | `type' == 6
 		gen place = _n - mod(_n,3)
 			replace place = place - 3 if mod(_n,3) == 0
 			drop order
 
-			reshape wide stat_ , i(n `by') j(type)
+			reshape wide stat_ , i(n `by') j(`type')
 			sort place
 
 	// Gaps
