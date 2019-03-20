@@ -9,16 +9,17 @@ prog def betterbar
 	if `c(version)' >= 15 local la "la(center)"
 	version 13.1
 
-syntax anything 				/// Variable list
+syntax anything 				    /// Variable list
 	[if] [in] [fw iw aw pw], 	///
-	[Over(varname)]				/// Determines groups for comparison at the lowest level
-	[by(varname)]				/// Separate variables across higher groups
-	[Vertical]					/// Horizontal bar is the default
-	[ci]						/// Plots standard error bars
-	[n]							/// Adds sample sizes in legend
-	[BARlab]					/// Labels bars with means
-	[format(string asis)]		/// Formats for bar means
-	[*]							/// Allows any normal options for twoway graphs
+	[Over(varname)]				    /// Determines groups for comparison at the lowest level
+	[by(varname)]				      /// Separate variables across higher groups
+	[Vertical]					      /// Horizontal bar is the default
+	[ci]						          /// Plots standard error bars
+	[n]							          /// Adds sample sizes in legend
+	[BARlab]					        /// Labels bars with means
+	[format(string asis)]		  /// Formats for bar means
+  [vce(passthru)]           /// Allow any VCE options in [mean]
+	[*]							          /// Allows any normal options for twoway graphs
 
 // Prep
 
@@ -81,7 +82,8 @@ marksample touse
 			if `r(N)' == 0 replace `var' = 0 if `by' == `bylevel'
 		}
 		keep if `by' == `bylevel'
-		mean `anything' [`weight'`exp'] , over(`over' , nolabel)
+		mean `anything' [`weight'`exp'] ///
+      , over(`over' , nolabel) `vce'
 
 		mat a = r(table)
 		clear
