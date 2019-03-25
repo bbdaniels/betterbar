@@ -17,6 +17,7 @@ syntax anything 				    /// Variable list
 	[ci]						          /// Plots standard error bars
 	[n]							          /// Adds sample sizes in legend
 	[BARlab]					        /// Labels bars with means
+  [pct]                     /// Bar labels as percentages
 	[format(string asis)]		  /// Formats for bar means
   [vce(passthru)]           /// Allow any VCE options in [mean]
 	[*]							          /// Allows any normal options for twoway graphs
@@ -179,6 +180,9 @@ marksample touse
 
 		// Set up bar labels
 		gen lab = strofreal(stat_1,"%9.2f")
+    if "`pct'" == "pct" replace lab = subinstr(lab,".0",".",.)
+    if "`pct'" == "pct" replace lab = subinstr(lab,"0.","",.) + "%"
+    if "`pct'" == "pct" replace lab = subinstr(lab,"1.","1",.) 
 		if "`format'" != "" replace lab = strofreal(stat_1,"`format'")
 		if "`barlab'" != "" & "`ci'" == "ci" & "`vertical'" == "" local blabplot "(scatter place stat_6  , m(none) mlab(lab) mlabpos(3) mlabc(black) )"
 		if "`barlab'" != "" & "`ci'" == ""   & "`vertical'" == "" local blabplot "(scatter place stat_1  , m(none) mlab(lab) mlabpos(3) mlabc(black) )"
