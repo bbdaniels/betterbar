@@ -182,12 +182,12 @@ marksample touse
 		gen lab = strofreal(stat_1,"%9.2f")
     if "`pct'" == "pct" replace lab = subinstr(lab,".0",".",.)
     if "`pct'" == "pct" replace lab = subinstr(lab,"0.","",.) + "%"
-    if "`pct'" == "pct" replace lab = subinstr(lab,"1.","1",.) 
+    if "`pct'" == "pct" replace lab = subinstr(lab,"1.","1",.)
 		if "`format'" != "" replace lab = strofreal(stat_1,"`format'")
 		if "`barlab'" != "" & "`ci'" == "ci" & "`vertical'" == "" local blabplot "(scatter place stat_6  , m(none) mlab(lab) mlabpos(3) mlabc(black) )"
 		if "`barlab'" != "" & "`ci'" == ""   & "`vertical'" == "" local blabplot "(scatter place stat_1  , m(none) mlab(lab) mlabpos(3) mlabc(black) )"
-		if "`barlab'" != "" & "`ci'" == "ci" & "`vertical'" != "" local blabplot "(scatter stat_6 place , m(none) mlab(lab) mlabpos(3) mlabc(black) )"
-		if "`barlab'" != "" & "`ci'" == ""   & "`vertical'" != "" local blabplot "(scatter stat_1 place , m(none) mlab(lab) mlabpos(3) mlabc(black) )"
+		if "`barlab'" != "" & "`ci'" == "ci" & "`vertical'" != "" local blabplot "(scatter stat_6 place , m(none) mlab(lab) mlabpos(12) mlabc(black) )"
+		if "`barlab'" != "" & "`ci'" == ""   & "`vertical'" != "" local blabplot "(scatter stat_1 place , m(none) mlab(lab) mlabpos(12) mlabc(black) )"
 
 		// Set up variable names
 		gen var = ""
