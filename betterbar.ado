@@ -40,7 +40,8 @@ marksample touse
     local colorCounter = 0
     foreach color in `barcolor' {
       local ++colorCounter
-      local barColor`colorCounter' = "fc(`: word `colorCounter' of `barcolor'')"
+      local barColor`colorCounter' = ///
+        "fc(`: word `=`: list sizeof barcolor' - `colorCounter' + 1' of `barcolor'')"
     }
   }
 
