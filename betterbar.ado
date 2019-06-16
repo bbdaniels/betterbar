@@ -17,6 +17,7 @@ syntax anything 				    /// Variable list
 	[ci]						          /// Plots standard error bars
 	[n]							          /// Adds sample sizes in legend
 	[BARlab]					        /// Labels bars with means
+  [BARColor(string asis)]   /// Specify list of bar colors
   [pct]                     /// Bar labels as percentages
 	[format(string asis)]		  /// Formats for bar means
   [vce(passthru)]           /// Allow any VCE options in [mean]
@@ -33,6 +34,15 @@ marksample touse
 
 	// Clean for weights
 	local anything = subinstr("`anything'","[]","",.)
+
+  // Set up bar colors
+  if "`barcolor'" != "" {
+    local colorCounter = 0
+    foreach color in `barcolor' {
+      local ++colorCounter
+      local barColor`colorCounter' = "fc(`: word `colorCounter' of `barcolor'')"
+    }
+  }
 
 	// If no by or over - fill in
 		if "`by'" == "" {
@@ -158,7 +168,7 @@ marksample touse
 			local theLabel : label (`over') `level'
 			count if `over' == `level'
 			if "`n'" != "" local theN " (N=`r(N)')"
-			local theBars `"`theBars' (bar stat_1 place if n == "`level'" , barw(2) fi(100) lw(thin) `la' lc(white) `horizontal' ) "'
+			local theBars `"`theBars' (bar stat_1 place if n == "`level'" , `barColor`x'' barw(2) fi(100) lw(thin) `la' lc(white) `horizontal' ) "'
 			local theLegend `"`theLegend' `x' "`theLabel'`theN'""'
 		}
 		// Get variable labels

@@ -22,7 +22,10 @@ Help for {hi:betterbar} version 1.3
 {synopthdr:Graph Options}
 {synopt:{opt n}}Adds group sizes to legend.{p_end}
 {synopt:{opt ci}}Includes 95% confidence intervals around the means. Alternately specify {bf: betterbarci}.{p_end}
+{synopt:{opt vce(vcetype)}}Adjusts confidence intervals for any standard VCE type.{p_end}
 {synopt:{opt bar:lab}}Labels the bars with the mean values.{p_end}
+{synopt:{opt barc:olor(list)}}List of fill colors for bars.{p_end}
+{synopt:{opt pct}}Labels the bars with the mean values expressed as percentages (when binary variables are used).{p_end}
 {synopt:{opth format(format)}}Format the bar labels. {p_end}
 {synopt:{opt v:ertical}}Produces vertical bars. The default is horizontal.{p_end}
 {synoptline}
