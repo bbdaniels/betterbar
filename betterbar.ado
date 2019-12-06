@@ -102,6 +102,11 @@ marksample touse
 		mat a = r(table)
 		clear
 		svmat a , n(eqcol)
+    foreach var in `e(varlist)' {
+      foreach lab in `e(over_labels)' {
+        rename `var'`lab' `var'_`lab'
+      }
+    }
 		rename * stat_*
 
 		gen `by' = `bylevel'
@@ -132,7 +137,7 @@ marksample touse
 		gen so = 0
 		local item_n = -1
 		foreach item in `anything' {
-			replace so = `item_n' if strpos(n,"`item'") == 1
+			replace so = `item_n' if substr(n,1,strpos(n,"_")-1) == "`item'"
 			local --item_n
 		}
 
@@ -203,10 +208,11 @@ marksample touse
 		if "`barlab'" != "" & "`ci'" == ""   & "`vertical'" != "" local blabplot "(scatter stat_1 place , m(none) mlab(lab) mlabpos(12) mlabc(black) )"
 
 		// Set up variable names
+
 		gen var = ""
 		foreach var in `anything' {
-			replace var = "``var''" if strpos(n,"`var'") == 1
-			replace n = subinstr(n,"`var'","",1) if strpos(n,"`var'") == 1
+			replace var = "``var''" if substr(n,1,strpos(n,"_")-1) == "`var'"
+			replace n = substr(n,strpos(n,"_")+1,.) if substr(n,1,strpos(n,"_")-1) == "`var'"
 		}
 
 		// Gaps
