@@ -9,16 +9,19 @@ prog def betterbar
 	if `c(version)' >= 15 local la "la(center)"
 	version 13.1
 
-syntax anything 				/// Variable list
+syntax anything 				    /// Variable list
 	[if] [in] [fw iw aw pw], 	///
-	[Over(varname)]				/// Determines groups for comparison at the lowest level
-	[by(varname)]				/// Separate variables across higher groups
-	[Vertical]					/// Horizontal bar is the default
-	[ci]						/// Plots standard error bars
-	[n]							/// Adds sample sizes in legend
-	[BARlab]					/// Labels bars with means
-	[format(string asis)]		/// Formats for bar means
-	[*]							/// Allows any normal options for twoway graphs
+	[Over(varname)]				    /// Determines groups for comparison at the lowest level
+	[by(varname)]				      /// Separate variables across higher groups
+	[Vertical]					      /// Horizontal bar is the default
+	[ci]						          /// Plots standard error bars
+	[n]							          /// Adds sample sizes in legend
+	[BARlab]					        /// Labels bars with means
+  [BARColor(string asis)]   /// Specify list of bar colors
+  [pct]                     /// Bar labels as percentages
+	[format(string asis)]		  /// Formats for bar means
+  [vce(passthru)]           /// Allow any VCE options in [mean]
+	[*]							          /// Allows any normal options for twoway graphs
 
 // Prep
 
@@ -31,6 +34,16 @@ marksample touse
 
 	// Clean for weights
 	local anything = subinstr("`anything'","[]","",.)
+
+  // Set up bar colors
+  if "`barcolor'" != "" {
+    local colorCounter = 0
+    foreach color in `barcolor' {
+      local ++colorCounter
+      local barColor`colorCounter' = ///
+        "fc(`: word `=`: list sizeof barcolor' - `colorCounter' + 1' of `barcolor'')"
+    }
+  }
 
 	// If no by or over - fill in
 		if "`by'" == "" {
@@ -61,7 +74,6 @@ marksample touse
 	// Horizonal-vertical settings
 	if "`vertical'" == "" local horizontal "horizontal"
 	if "`horizontal'" != "" {
-		local reverse "yscale(reverse)"
 		local axis y
 	}
 	else {
@@ -77,12 +89,13 @@ marksample touse
 		// Mean respecting over-groups
 		use `allData' , clear
     unab anything : `anything'
-		foreach var in `anything' {
+		foreach var of varlist `anything' {
 			count if `by' == `bylevel' & `var' < .
 			if `r(N)' == 0 replace `var' = 0 if `by' == `bylevel'
 		}
 		keep if `by' == `bylevel'
-		mean `anything' [`weight'`exp'] , over(`over' , nolabel)
+		mean `anything' [`weight'`exp'] ///
+      , over(`over' , nolabel) `vce'
 
 		mat a = r(table)
 		clear
@@ -104,12 +117,13 @@ marksample touse
 // Set up graphing points
 
 	// Find means and bounds
-		gen type = mod(_n,9)
-		reshape long stat_ , i(`by' type) j(n) string
+    tempvar type
+		gen `type' = mod(_n,9)
+		reshape long stat_ , i(`by' `type') j(n) string
 
 	// Sort order
 		tempvar temp
-		gen `temp' = stat_ if type == 0
+		gen `temp' = stat_ if `type' == 0
 		bys n: egen order = min(`temp')
 		drop `temp'
 
@@ -119,13 +133,18 @@ marksample touse
 			replace so = `n' if strpos(n,"`item'") == 1
 			local --n
 		}
-		sort `by' so n order type
-		keep if type == 1 | type == 5 | type == 6
-		drop if stat_ == 0 | stat_ == .
+
+    tempvar overvar
+    gen `overvar' = real(substr(n,-1,.))
+
+		gsort + `by' + so - `overvar' + n + order + `type'
+
+		keep if `type' == 1 | `type' == 5 | `type' == 6
 		gen place = _n - mod(_n,3)
 			replace place = place - 3 if mod(_n,3) == 0
 			drop order
-			reshape wide stat_ , i(n `by') j(type)
+
+			reshape wide stat_ , i(n `by') j(`type')
 			sort place
 
 	// Gaps
@@ -150,7 +169,7 @@ marksample touse
 			local theLabel : label (`over') `level'
 			count if `over' == `level'
 			if "`n'" != "" local theN " (N=`r(N)')"
-			local theBars `"`theBars' (bar stat_1 place if n == "`level'" , barw(2) fi(100) lw(thin) `la' lc(white) `horizontal' ) "'
+			local theBars `"`theBars' (bar stat_1 place if n == "`level'" , `barColor`x'' barw(2) fi(100) lw(thin) `la' lc(white) `horizontal' ) "'
 			local theLegend `"`theLegend' `x' "`theLabel'`theN'""'
 		}
 		// Get variable labels
@@ -172,11 +191,14 @@ marksample touse
 
 		// Set up bar labels
 		gen lab = strofreal(stat_1,"%9.2f")
+    if "`pct'" == "pct" replace lab = subinstr(lab,".0",".",.)
+    if "`pct'" == "pct" replace lab = subinstr(lab,"0.","",.) + "%"
+    if "`pct'" == "pct" replace lab = subinstr(lab,"1.","1",.)
 		if "`format'" != "" replace lab = strofreal(stat_1,"`format'")
 		if "`barlab'" != "" & "`ci'" == "ci" & "`vertical'" == "" local blabplot "(scatter place stat_6  , m(none) mlab(lab) mlabpos(3) mlabc(black) )"
 		if "`barlab'" != "" & "`ci'" == ""   & "`vertical'" == "" local blabplot "(scatter place stat_1  , m(none) mlab(lab) mlabpos(3) mlabc(black) )"
-		if "`barlab'" != "" & "`ci'" == "ci" & "`vertical'" != "" local blabplot "(scatter stat_6 place , m(none) mlab(lab) mlabpos(3) mlabc(black) )"
-		if "`barlab'" != "" & "`ci'" == ""   & "`vertical'" != "" local blabplot "(scatter stat_1 place , m(none) mlab(lab) mlabpos(3) mlabc(black) )"
+		if "`barlab'" != "" & "`ci'" == "ci" & "`vertical'" != "" local blabplot "(scatter stat_6 place , m(none) mlab(lab) mlabpos(12) mlabc(black) )"
+		if "`barlab'" != "" & "`ci'" == ""   & "`vertical'" != "" local blabplot "(scatter stat_1 place , m(none) mlab(lab) mlabpos(12) mlabc(black) )"
 
 		// Set up variable names
 		gen var = ""
@@ -209,7 +231,7 @@ marksample touse
 		`ciplot' 	///
 		`blabplot' 	///
 		(scatter zero zero , m (none) ) ///
-		, xtitle(" ") ytitle(" ") `reverse' legend(order(`theLegend')) ///
+		, xtitle(" ") ytitle(" ") legend(order(`theLegend')) ///
 			`axis'lab(`varlabs' , angle(0) nogrid notick) ylab(,angle(0)) ///
 			`options'
 
