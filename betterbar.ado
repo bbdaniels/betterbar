@@ -130,10 +130,10 @@ marksample touse
 		drop `temp'
 
 		gen so = 0
-		local n = -1
+		local item_n = -1
 		foreach item in `anything' {
-			replace so = `n' if strpos(n,"`item'") == 1
-			local --n
+			replace so = `item_n' if strpos(n,"`item'") == 1
+			local --item_n
 		}
 
     tempvar overvar
