@@ -76,6 +76,7 @@ marksample touse
 	foreach bylevel in `bylevels' {
 		// Mean respecting over-groups
 		use `allData' , clear
+    unab anything : `anything'
 		foreach var in `anything' {
 			count if `by' == `bylevel' & `var' < .
 			if `r(N)' == 0 replace `var' = 0 if `by' == `bylevel'
