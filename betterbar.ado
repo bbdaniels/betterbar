@@ -1,4 +1,4 @@
-//! version 1.3 31DEC2018  DIME Analytics bbdaniels@gmail.com
+//! version 1.4 31DEC2019  Benjamin Daniels bbdaniels@gmail.com
 
 // Betterbar - Stata module to produce bar graphs with standard error bars and cross-group comparisons.
 
@@ -11,17 +11,19 @@ prog def betterbar
 
 syntax anything 				    /// Variable list
 	[if] [in] [fw iw aw pw], 	///
+  [by(varname)]				      /// Separate variables across higher groups
 	[Over(varname)]				    /// Determines groups for comparison at the lowest level
-	[by(varname)]				      /// Separate variables across higher groups
-	[Vertical]					      /// Horizontal bar is the default
-	[ci]						          /// Plots standard error bars
-	[n]							          /// Adds sample sizes in legend
+	///
+  [n]							          /// Adds sample sizes in legend
+  [ci]						          /// Plots standard error bars
+  [vce(passthru)]           /// Allow any VCE options in [mean]
 	[BARlab]					        /// Labels bars with means
   [BARColor(string asis)]   /// Specify list of bar colors
   [pct]                     /// Bar labels as percentages
 	[format(string asis)]		  /// Formats for bar means
-  [vce(passthru)]           /// Allow any VCE options in [mean]
+  [Vertical]					      /// Horizontal bar is the default
 	[*]							          /// Allows any normal options for twoway graphs
+
 
 // Prep
 
