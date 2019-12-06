@@ -1,7 +1,7 @@
 {smcl}
-{* Dec 31st 2018}
+{* Dec 31st 2019}
 {hline}
-Help for {hi:betterbar} version 1.3
+Help for {hi:betterbar} version 1.4
 {hline}
 
 {title:Description}
@@ -22,7 +22,10 @@ Help for {hi:betterbar} version 1.3
 {synopthdr:Graph Options}
 {synopt:{opt n}}Adds group sizes to legend.{p_end}
 {synopt:{opt ci}}Includes 95% confidence intervals around the means. Alternately specify {bf: betterbarci}.{p_end}
+{synopt:{opt vce(vcetype)}}Adjusts confidence intervals for any standard VCE type.{p_end}
 {synopt:{opt bar:lab}}Labels the bars with the mean values.{p_end}
+{synopt:{opt barc:olor(list)}}List of fill colors for bars.{p_end}
+{synopt:{opt pct}}Labels the bars with the mean values expressed as percentages (when binary variables are used).{p_end}
 {synopt:{opth format(format)}}Format the bar labels. {p_end}
 {synopt:{opt v:ertical}}Produces vertical bars. The default is horizontal.{p_end}
 {synoptline}
@@ -44,7 +47,6 @@ bbdaniels@gmail.com
 
 {title:Contributing}
 
-{p}{bf: betterbar} is open for development on {browse "https://bbdaniels.github.io/stata-code/betterbar/":GitHub}.
+{p}{bf: betterbar} is open for development on {browse "https://github.com/bbdaniels/betterbar":GitHub}.
 Submit bugs and feature requests {browse "https://github.com/bbdaniels/betterbar/issues":here}.
-If you like {bf:betterbar}, be sure to visit my {browse "http://bbdaniels.github.io":homepage}
-and {browse "https://gist.github.com/bbdaniels/a3c9f9416f1d16d6f3c6e8cf371f1d89":Stata boilerplate code}.{p_end}
+If you like {bf:betterbar}, be sure to visit my {browse "http://www.benjaminbdaniels.com":homepage}.{p_end}
