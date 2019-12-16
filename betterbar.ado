@@ -137,14 +137,19 @@ marksample touse
 		gen so = 0
 		local item_n = -1
 		foreach item in `anything' {
-			replace so = `item_n' if substr(n,1,strpos(n,"_")-1) == "`item'"
+			replace so = `item_n' if substr(n,1,strrpos(n,"_")-1) == "`item'"
 			local --item_n
 		}
 
     tempvar overvar
     gen `overvar' = real(substr(n,-1,.))
 
-		gsort + `by' + so - `overvar' + n + order + `type'
+    if "`vertical'" != "" {
+      gsort + `by' + so + `overvar' + n + order + `type'
+    }
+    else {
+      gsort - `by' + so - `overvar' + n + order + `type'
+    }
 
 		keep if `type' == 1 | `type' == 5 | `type' == 6
 		gen place = _n - mod(_n,3)
@@ -211,8 +216,8 @@ marksample touse
 
 		gen var = ""
 		foreach var in `anything' {
-			replace var = "``var''" if substr(n,1,strpos(n,"_")-1) == "`var'"
-			replace n = substr(n,strpos(n,"_")+1,.) if substr(n,1,strpos(n,"_")-1) == "`var'"
+			replace var = "``var''" if substr(n,1,strrpos(n,"_")-1) == "`var'"
+			replace n = substr(n,strrpos(n,"_")+1,.) if substr(n,1,strrpos(n,"_")-1) == "`var'"
 		}
 
 		// Gaps
