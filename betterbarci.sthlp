@@ -1,7 +1,7 @@
 {smcl}
 {* Dec 31st 2019}
 {hline}
-Help for {hi:betterbar} version 1.4
+Help for {hi:betterbar} 
 {hline}
 
 {title:Description}
