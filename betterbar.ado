@@ -211,6 +211,7 @@ marksample touse
 		if "`barlab'" != "" & "`ci'" == ""   & "`vertical'" == "" local blabplot "(scatter place stat_1  , m(none) mlab(lab) mlabpos(3) mlabc(black) )"
 		if "`barlab'" != "" & "`ci'" == "ci" & "`vertical'" != "" local blabplot "(scatter stat_6 place , m(none) mlab(lab) mlabpos(12) mlabc(black) )"
 		if "`barlab'" != "" & "`ci'" == ""   & "`vertical'" != "" local blabplot "(scatter stat_1 place , m(none) mlab(lab) mlabpos(12) mlabc(black) )"
+    if "`barlab'" != "" & "`ci'" == "ci" replace stat_6 = stat_1 if stat_6 == .
 
 		// Set up variable names
 
