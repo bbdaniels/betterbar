@@ -1,4 +1,4 @@
-//! version 1.5 31DEC2019  Benjamin Daniels bbdaniels@gmail.com
+*! version 1.5 31DEC2019  Benjamin Daniels bbdaniels@gmail.com
 
 // Betterbar - Stata module to produce bar graphs with standard error bars and cross-group comparisons.
 
