@@ -29,7 +29,7 @@ syntax anything 				    /// Variable list
 
 qui {
 preserve
-marksample touse
+marksample touse , novarlist
 	keep if `touse'
 
 // Setup
