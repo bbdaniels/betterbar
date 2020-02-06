@@ -86,6 +86,7 @@ marksample touse , novarlist
 
 	// Loop over by-groups
 	use `allData' , clear
+  unab theVarlist: `anything'
 	levelsof `by' , local(bylevels)
 	foreach bylevel in `bylevels' {
 		// Mean respecting over-groups
@@ -96,13 +97,22 @@ marksample touse , novarlist
 			if `r(N)' == 0 replace `var' = 0 if `by' == `bylevel'
 		}
 		keep if `by' == `bylevel'
-		mean `anything' [`weight'`exp'] ///
-      , over(`over' , nolabel) `vce'
 
-		mat a = r(table)
+    tempname a
+    cap mat drop `a'
+    foreach var of varlist `anything' {
+  		mean `var' [`weight'`exp'] ///
+        , over(`over' , nolabel) `vce'
+
+      mat theseStats = r(table)
+      mat `a' = nullmat(`a') ///
+        , theseStats
+    }
+
 		clear
-		svmat a , n(eqcol)
-    foreach var in `e(varlist)' {
+		svmat `a' , n(eqcol)
+
+    foreach var in `theVarlist' {
       foreach lab in `e(over_labels)' {
         rename `var'`lab' `var'_`lab'
       }
